@@ -144,7 +144,7 @@
     <a href="#cart"><i class="fas fa-shopping-cart"></i></a>
   </nav>
 
-  <!-- Men's Wear Section -->
+  <!-- Men’s Wear Section -->
   <div class="section" id="mens">
     <h2>Men’s Wear</h2>
     <div class="products">
@@ -166,42 +166,6 @@
     </div>
   </div>
 
-  <!-- Women's Wear Section -->
-  <div class="section" id="womens">
-    <h2>Women’s Wear</h2>
-    <div class="products">
-      <div class="product"><img alt="Product" />
-        <h3>Kurti</h3><p>₹399</p>
-        Qty: <input type="number" value="1" min="1" />
-        <button onclick="addToCart('Kurti', 399, this)">Add to Cart</button>
-      </div>
-      <div class="product"><img alt="Product" />
-        <h3>Skirt</h3><p>₹499</p>
-        Qty: <input type="number" value="1" min="1" />
-        <button onclick="addToCart('Skirt', 499, this)">Add to Cart</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Kids Wear Section -->
-  <div class="section" id="kids">
-    <h2>Kids Wear</h2>
-    <div class="products">
-      <div class="product"><img alt="Product" />
-        <h3>Kids T-Shirt</h3><p>₹199</p>
-        Qty: <input type="number" value="1" min="1" />
-        <button onclick="addToCart('Kids T-Shirt', 199, this)">Add to Cart</button>
-      </div>
-      <div class="product"><img alt="Product" />
-        <h3>Frock</h3><p>₹399</p>
-        Qty: <input type="number" value="1" min="1" />
-        <button onclick="addToCart('Frock', 399, this)">Add to Cart</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="message"></div>
-
   <!-- Cart Section -->
   <div id="cart">
     <h2>Cart</h2>
@@ -214,85 +178,87 @@
     </div>
   </div>
 
-<script>
-  const cart = [];
+  <div id="message"></div>
 
-  function showMessage(msg) {
-    const messageDiv = document.getElementById('message');
-    messageDiv.textContent = msg;
-    setTimeout(() => { messageDiv.textContent = ''; }, 2500);
-  }
+  <script>
+    const cart = [];
 
-  function addToCart(name, price, btn) {
-    const qty = parseInt(btn.previousElementSibling.value);
-    if (qty < 1) return alert("Enter valid quantity");
-    const existing = cart.find(item => item.name === name);
-    if (existing) {
-      existing.qty += qty;
-    } else {
-      cart.push({ name, price, qty });
+    function showMessage(msg) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = msg;
+      setTimeout(() => { messageDiv.textContent = ''; }, 2500);
     }
-    updateCart();
-    showMessage( ${name} added to cart);
-  }
 
-  function removeFromCart(name) {
-    const index = cart.findIndex(item => item.name === name);
-    if (index > -1) {
-      cart.splice(index, 1);
+    function addToCart(name, price, btn) {
+      const qty = parseInt(btn.previousElementSibling.value);
+      if (qty < 1) return alert("Enter valid quantity");
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({ name, price, qty });
+      }
       updateCart();
-    }
-  }
-
-  function updateCart() {
-    const cartItemsDiv = document.getElementById('cart-items');
-    const cartTotalDiv = document.getElementById('cart-total');
-
-    if (cart.length === 0) {
-      cartItemsDiv.innerHTML = "No items added yet.";
-      cartTotalDiv.innerHTML = "";
-      return;
+      showMessage( ${name} added to cart);
     }
 
-    let html = "<ul>";
-    let total = 0;
-    cart.forEach(item => {
-      html += `<li>${item.name} x ${item.qty} = ₹${item.qty * item.price}
-        <span class="remove-btn" onclick="removeFromCart('${item.name}')"> Remove</span></li>`;
-      total += item.qty * item.price;
+    function removeFromCart(name) {
+      const index = cart.findIndex(item => item.name === name);
+      if (index > -1) {
+        cart.splice(index, 1);
+        updateCart();
+      }
+    }
+
+    function updateCart() {
+      const cartItemsDiv = document.getElementById('cart-items');
+      const cartTotalDiv = document.getElementById('cart-total');
+
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = "No items added yet.";
+        cartTotalDiv.innerHTML = "";
+        return;
+      }
+
+      let html = "<ul>";
+      let total = 0;
+      cart.forEach(item => {
+        html += `<li>${item.name} x ${item.qty} = ₹${item.qty * item.price}
+          <span class="remove-btn" onclick="removeFromCart('${item.name}')"> Remove</span></li>`;
+        total += item.qty * item.price;
+      });
+      html += "</ul>";
+
+      cartItemsDiv.innerHTML = html;
+      cartTotalDiv.innerHTML = <strong>Total: ₹${total}</strong>;
+    }
+
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      if (cart.length === 0) return alert("Cart is empty!");
+      const items = cart.map(item => ${item.name} x ${item.qty} = ₹${item.price * item.qty}).join('\n');
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const message = Order Summary:\n${items}\nTotal: ₹${total};
+      const encodedMessage = encodeURIComponent(message);
+      window.open(https://wa.me/919443016625?text=${encodedMessage}, '_blank');
     });
-    html += "</ul>";
 
-    cartItemsDiv.innerHTML = html;
-    cartTotalDiv.innerHTML = <strong>Total: ₹${total}</strong>;
-  }
+    document.getElementById('sms-fallback').addEventListener('click', () => {
+      if (cart.length === 0) return alert("Cart is empty!");
+      const items = cart.map(item => ${item.name} x ${item.qty}).join(', ');
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const message = Order: ${items}. Total: ₹${total};
+      const encodedMessage = encodeURIComponent(message);
+      window.open(sms:+919443016625?body=${encodedMessage}, '_blank');
+    });
 
-  document.getElementById('checkout-btn').addEventListener('click', () => {
-    if (cart.length === 0) return alert("Cart is empty!");
-    const items = cart.map(item => ${item.name} x ${item.qty} = ₹${item.price * item.qty}).join('\n');
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const message = Order Summary:\n${items}\nTotal: ₹${total};
-    const encodedMessage = encodeURIComponent(message);
-    window.open(https://wa.me/919443016625?text=${encodedMessage}, '_blank');
-  });
-
-  document.getElementById('sms-fallback').addEventListener('click', () => {
-    if (cart.length === 0) return alert("Cart is empty!");
-    const items = cart.map(item => ${item.name} x ${item.qty}).join(', ');
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const message = Order: ${items}. Total: ₹${total};
-    const encodedMessage = encodeURIComponent(message);
-    window.open(sms:+919443016625?body=${encodedMessage}, '_blank');
-  });
-
-  document.getElementById('email-btn').addEventListener('click', () => {
-    if (cart.length === 0) return alert("Cart is empty!");
-    const items = cart.map(item => ${item.name} x ${item.qty}).join(', ');
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const subject = encodeURIComponent("Order from Koolzy");
-    const body = encodeURIComponent(Order Details:\n${items}\nTotal: ₹${total});
-    window.open(mailto:?subject=${subject}&body=${body}, '_blank');
-  });
-</script>
+    document.getElementById('email-btn').addEventListener('click', () => {
+      if (cart.length === 0) return alert("Cart is empty!");
+      const items = cart.map(item => ${item.name} x ${item.qty}).join(', ');
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const subject = encodeURIComponent("Order from Koolzy");
+      const body = encodeURIComponent(Order Details:\n${items}\nTotal: ₹${total});
+      window.open(mailto:?subject=${subject}&body=${body}, '_blank');
+    });
+  </script>
 </body>
 </html>
