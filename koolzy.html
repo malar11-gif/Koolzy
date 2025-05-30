@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Koolzy E-commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body class="bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState } = React;
+
+      const products = [
+        {
+          id: 1,
+          name: "Men's T-Shirt",
+          category: "Men's Wear",
+          price: 599,
+          image: "https://via.placeholder.com/150"
+        },
+        {
+          id: 2,
+          name: "Women's Dress",
+          category: "Women's Wear",
+          price: 899,
+          image: "https://via.placeholder.com/150"
+        },
+        {
+          id: 3,
+          name: "Kid's Shorts",
+          category: "Kids' Wear",
+          price: 499,
+          image: "https://via.placeholder.com/150"
+        }
+      ];
+
+      const Header = ({ cartCount }) => (
+        <header className="bg-white shadow p-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Koolzy</h1>
+          <div className="relative">
+            <span className="material-icons">shopping_cart</span>
+            {cartCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </div>
+        </header>
+      );
+
+      const ProductCard = ({ product, onAddToCart }) => {
+        const [quantity, setQuantity] = useState(1);
+        return (
+          <div className="bg-white shadow p-4 rounded-lg">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-40 object-cover mb-4 rounded"
+            />
+            <h2 className="text-lg font-semibold">{product.name}</h2>
+            <p className="text-gray-600">₹{product.price}</p>
+            <div className="flex items-center mt-2">
+              <label className="mr-2">Qty:</label>
+              <input
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value))}
+                className="w-16 border rounded p-1"
+              />
+            </div>
+            <button
+              onClick={() => onAddToCart(product, quantity)}
+              className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Add to Cart
+            </button>
+          </div>
+        );
+      };
+
+      const Cart = ({ cartItems, onUpdateQuantity, onRemoveItem }) => {
+        const total = cartItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
+        const orderSummary = cartItems
+          .map(
+            (item) =>
+              ${item.name} x ${item.quantity} = ₹${item.price * item.quantity}
+          )
+          .join("%0A");
+        const message = Order Summary:%0A${orderSummary}%0ATotal: ₹${total};
+        const whatsappLink = https://wa.me/919443016625?text=${message};
+        const emailLink = mailto:vasanthakumarvk33@gmail.com?subject=Order%20Summary&body=${message};
+        return (
+          <div className="bg-white shadow p-4 mt-4 rounded-lg">
+            <h2 className="text-xl font-bold mb-4">Shopping Cart</h2>
+            {cartItems.length === 0 ? (
+              <p>Your cart is empty.</p>
+            ) : (
+              <>
+                {cartItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex justify-between items-center mb-2"
+                  >
+                    <div>
+                      <p className="font-semibold">{item.name}</p>
+                      <p>
+                        ₹{item.price} x {item.quantity}
+                      </p>
+                    </div>
+                    <div className="flex items-center">
+                      <button
+                        onClick={() =>
+                          onUpdateQuantity(item.id, item.quantity - 1)
+                        }
+                        className="px-2 bg-gray-300 rounded hover:bg-gray-400"
+                        disabled={item.quantity <= 1}
+                      >
+                        -
+                      </button>
+                      <span className="px-2">{item.quantity}</span>
+                      <button
+                        onClick={() =>
+                          onUpdateQuantity(item.id, item.quantity + 1)
+                        }
+                        className="px-2 bg-gray-300 rounded hover:bg-gray-400"
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => onRemoveItem(item.id)}
+                        className="ml-2 text-red-500"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <p className="font-bold mt-4">Total: ₹{total}</p>
+                <div className="mt-4 flex gap-4">
+                  <a
+                    href={whatsappLink}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Checkout via WhatsApp
+                  </a>
+                  <a
+                    href={emailLink}
+                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                  >
+                    Checkout via Email
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
+        );
+      };
+
+      const App = () => {
+        const [cartItems, setCartItems] = useState([]);
+
+        const handleAddToCart = (product, quantity) => {
+          setCartItems((prev) => {
+            const existing = prev.find((item) => item.id === product.id);
+            if (existing) {
+              return prev.map((item) =>
+                item.id === product.id
+                  ? { ...item, quantity: item.quantity + quantity }
+                  : item
+              );
+            } else {
+              return [...prev, { ...product, quantity }];
+            }
+          });
+        };
+
+        const handleUpdateQuantity = (id, newQuantity) => {
+          if (newQuantity <= 0) return;
+          setCartItems((prev) =>
+            prev.map((item) =>
+              item.id === id ? { ...item, quantity: newQuantity } : item
+            )
+          );
+        };
+
+        const handleRemoveItem = (id) => {
+          setCartItems((prev) => prev.filter((item) => item.id !== id));
+        };
+
+        return (
+          <div>
+            <Header cartCount={cartItems.length} />
+            <main className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                />
+              ))}
+            </main>
+            <div className="p-4">
+              <Cart
+                cartItems={cartItems}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemoveItem={handleRemoveItem}
+              />
+            </div>
+          </div>
+        );
+      };
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
