@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Koolzy</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="container">
+      <div class="logo">
+        <a href="index.html">Koolzy Store</a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#mens">Men's Wear</a></li>
+        <li><a href="#womens">Women's Wear</a></li>
+        <li><a href="#kids">Kids' Wear</a></li>
+        <li><a href="#cart">Cart</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <section id="mens" class="category-section">
+      <h2>Men's Wear</h2>
+      <div class="products">
+        <div class="product">
+          <img src="https://via.placeholder.com/150" alt="Men's T-shirt">
+          <h3>Men's T-shirt</h3>
+          <p>Price: ₹299</p>
+          <button class="add-to-cart" onclick="addToCart('Men\'s T-shirt', 299)">Add to Cart</button>
+        </div>
+        <!-- Add more products as needed -->
+      </div>
+    </section>
+
+    <section id="womens" class="category-section">
+      <h2>Women's Wear</h2>
+      <div class="products">
+        <div class="product">
+          <img src="https://via.placeholder.com/150" alt="Women's Dress">
+          <h3>Women's Dress</h3>
+          <p>Price: ₹799</p>
+          <button class="add-to-cart" onclick="addToCart('Women\'s Dress', 799)">Add to Cart</button>
+        </div>
+        <!-- Add more products as needed -->
+      </div>
+    </section>
+
+    <section id="kids" class="category-section">
+      <h2>Kids' Wear</h2>
+      <div class="products">
+        <div class="product">
+          <img src="https://via.placeholder.com/150" alt="Kids' T-shirt">
+          <h3>Kids' T-shirt</h3>
+          <p>Price: ₹199</p>
+          <button class="add-to-cart" onclick="addToCart('Kids\' T-shirt', 199)">Add to Cart</button>
+        </div>
+        <!-- Add more products as needed -->
+      </div>
+    </section>
+
+    <!-- Cart Summary -->
+    <section id="cart" class="cart-section">
+      <h2>Your Cart</h2>
+      <ul id="cart-items"></ul>
+      <p id="cart-total">Total: ₹0</p>
+      <button onclick="checkout()">Proceed to Checkout</button>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Koolzy Store</p>
+  </footer>
+
+  <script src="script.js"></script> <!-- Link to your JavaScript file -->
+</body>
+</html>
+
+
+
